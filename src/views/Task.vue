@@ -12,9 +12,9 @@ import { DBDeleteLimit, MessageStatus } from '@/utils/constants'
 // @ts-ignore
 import { v4 as uuidv4 } from 'uuid'
 
-import { Vue, Watch, Component } from 'vue-property-decorator'
+import { Vue, Watch, Options } from 'vue-property-decorator'
 
-@Component
+@Options
 export default class Task extends Vue {
   deleteMessages(cid: any) {
     let messages = []

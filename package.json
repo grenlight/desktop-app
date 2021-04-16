@@ -54,13 +54,12 @@
     "url-parse": "^1.5.1",
     "uuid": "^8.3.2",
     "video.js": "^7.11.8",
-    "vue": "^2.6.12",
+    "vue": "^3.0.11",
     "vue-axios": "^3.2.4",
-    "vue-i18n": "^8.22.4",
-    "vue-property-decorator": "^8.5.1",
-    "vue-router": "^3.5.1",
-    "vuex": "^3.6.2",
-    "vuex-class": "^0.3.2",
+    "vue-i18n": "^9.1.5",
+    "vue-property-decorator": "^10.0.0-rc.3",
+    "vue-router": "^4.0.6",
+    "vuex": "^4.0.0",
     "xss": "^1.0.8"
   },
   "devDependencies": {
@@ -71,6 +70,7 @@
     "@vue/cli-plugin-eslint": "^4.5.12",
     "@vue/cli-plugin-typescript": "^4.5.12",
     "@vue/cli-service": "^4.5.12",
+    "@vue/compiler-sfc": "^3.0.11",
     "@vue/eslint-config-standard": "^4.0.0",
     "@vue/eslint-config-typescript": "^4.0.0",
     "babel-eslint": "^10.1.0",
@@ -79,18 +79,17 @@
     "electron-icon-builder": "^2.0.1",
     "electron-notarize": "^1.0.0",
     "eslint": "^6.8.0",
-    "eslint-plugin-vue": "^7.6.0",
+    "eslint-plugin-vue": "^7.9.0",
     "fs-extra": "^9.1.0",
     "node-loader": "^0.6.0",
     "node-sass": "^4.14.1",
     "sass-loader": "^8.0.2",
     "svg-sprite-loader": "^5.2.1",
     "typescript": "~3.7.5",
-    "vue-cli-plugin-electron-builder": "^2.0.0-rc.6",
-    "vue-template-compiler": "^2.6.12"
+    "vue-cli-plugin-electron-builder": "^2.0.0-rc.6"
   },
   "resolutions": {
-    "electron-builder": "^22.3.6",
+    "electron-builder": "^22.9.1",
     "moment": "2.29.1"
   },
   "main": "background.js",

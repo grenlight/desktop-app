@@ -1,4 +1,4 @@
-import Vue from 'vue'
+import { createApp } from 'vue'
 import electron from 'electron'
 import App from './App.vue'
 import router from './router'
@@ -32,38 +32,43 @@ import '@/components/video-player/video.scss'
 const fontawesome = require('@fortawesome/vue-fontawesome')
 library.add(faArrowLeft, faArrowRight, faChevronDown, faSearch, faPaperPlane)
 
-Vue.use(VueAxios, axios)
-Vue.use(Dialog)
-Vue.use(Menu)
-Vue.use(Toast)
-Vue.use(ImageViewer)
-Vue.use(Scrollbar)
-Vue.use(PostViewer)
-Vue.use(Circles)
-Vue.use(Markdown)
-Vue.use(Wrapper)
-Vue.use(VueIntersect)
-Vue.use(VueTitlebar)
-Vue.use(VideoPlayer)
+const app = createApp(App)
+app.use(VueAxios, axios)
+app.use(Dialog)
+app.use(Menu)
+app.use(Toast)
+app.use(ImageViewer)
+app.use(Scrollbar)
+app.use(PostViewer)
+app.use(Circles)
+app.use(Markdown)
+app.use(Wrapper)
+app.use(VueIntersect)
+app.use(VueTitlebar)
+app.use(VideoPlayer)
+app.use(i18n)
+app.use(router)
+app.use(store)
 
-Vue.component('font-awesome-icon', fontawesome.FontAwesomeIcon)
-Vue.config.productionTip = false
-Vue.config.devtools = false
+
+app.component('font-awesome-icon', fontawesome.FontAwesomeIcon)
+app.config.productionTip = false
+app.config.devtools = false
 // console.log(__VUE_DEVTOOLS_GLOBAL_HOOK__)
 
-Vue.prototype.$blaze = blaze
+app.config.globalProperties.$blaze = blaze
 moment.locale(navigator.language)
-Vue.prototype.$moment = moment
-Vue.prototype.$electron = electron
+app.config.globalProperties.$moment = moment
+app.config.globalProperties.$electron = electron
 let mouseMoveFlag = false
 document.onmousedown = () => {
-  Vue.prototype.$selectNes = null
+  app.config.globalProperties.$selectNes = null
   mouseMoveFlag = true
   setTimeout(() => {
     if (mouseMoveFlag) {
-      Vue.prototype.$selectNes = document.getSelection()
+      app.config.globalProperties.$selectNes = document.getSelection()
     } else {
-      Vue.prototype.$selectNes = null
+      app.config.globalProperties.$selectNes = null
     }
   }, 30)
 }
@@ -77,9 +82,4 @@ document.onmouseup = () => {
   }
 }
 
-new Vue({
-  i18n,
-  router,
-  store,
-  render: h => h(App)
-}).$mount('#app')
+app.mount('#app')

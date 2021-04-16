@@ -11,7 +11,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Options, Vue } from 'vue-property-decorator'
 
 import spinner from '@/components/Spinner.vue'
 import accountApi from '@/api/account'
@@ -70,7 +70,7 @@ window.linkClick = href => {
   event.stopPropagation()
 }
 
-@Component({
+@Options({
   components: {
     spinner
   }

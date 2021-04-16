@@ -45,11 +45,11 @@ import userDao from '@/dao/user_dao'
 import conversationDao from '@/dao/conversation_dao'
 import participantSessionDao from '@/dao/participant_session_dao'
 
-import { Vue, Component } from 'vue-property-decorator'
+import { Vue, Options } from 'vue-property-decorator'
 import { generateKeys } from '@/utils/signal_key_util'
 import { clearDb } from '@/persistence/db_util'
 
-@Component({
+@Options({
   components: {
     spinner
   }
@@ -64,7 +64,36 @@ export default class SignIn extends Vue {
 
   mounted() {
     this.refresh()
-  }
+  },
+
+  methods: {
+signinAction() {
+    if (!sessionStorage.signinData) return
+    const payload = JSON.parse(sessionStorage.signinData)
+    sessionStorage.signinData = ''
+    const { sessionKeyPair, message, registrationId, primarySessionId, keyPair, account } = payload
+    localStorage.sessionToken = sessionKeyPair.private
+    localStorage.primaryPlatform = message.platform
+    signalProtocol.storeIdentityKeyPair(registrationId, keyPair.pub, keyPair.priv)
+    this.pushSignalKeys().then((resp: any) => {
+      const deviceId = signalProtocol.convertToDeviceId(account.session_id)
+      localStorage.deviceId = deviceId
+      localStorage.primarySessionId = primarySessionId
+      localStorage.sessionId = account.session_id
+      localStorage.newVersion = true
+      this.$store.dispatch('saveAccount', account)
+      this.updateParticipantSession(account.user_id, account.session_id)
+      console.log('------signin deviceId', deviceId)
+      this.$router.push('/')
+    })
+  },
+  pushSignalKeys() {
+    // @ts-ignore
+    return wasmObject.then(() => {
+      const body = generateKeys()
+      return signalAPI.postSignalKeys(body)
+    })
+  },
 
   refresh() {
     this.showRetry = false
@@ -94,7 +123,7 @@ export default class SignIn extends Vue {
           console.log(e)
         })
     })
-  }
+  },
   generateQrcode(url: string) {
     const qrious = new QRious({
       element: this.$refs.qr,
@@ -104,7 +133,7 @@ export default class SignIn extends Vue {
       size: 300
     })
     qrious.value = url
-  }
+  },
   getSecret(deviceId: any) {
     interval(
       async(iteration: any, stop: any) => {
@@ -131,7 +160,7 @@ export default class SignIn extends Vue {
       1000,
       { iterations: 60 }
     )
-  }
+  },
   decryptProvision(envelopeDecoded: any) {
     let messageStr = ''
     try {
@@ -182,34 +211,7 @@ export default class SignIn extends Vue {
         sessionStorage.readyToSignin = true
         return location.reload()
       })
-  }
-  signinAction() {
-    if (!sessionStorage.signinData) return
-    const payload = JSON.parse(sessionStorage.signinData)
-    sessionStorage.signinData = ''
-    const { sessionKeyPair, message, registrationId, primarySessionId, keyPair, account } = payload
-    localStorage.sessionToken = sessionKeyPair.private
-    localStorage.primaryPlatform = message.platform
-    signalProtocol.storeIdentityKeyPair(registrationId, keyPair.pub, keyPair.priv)
-    this.pushSignalKeys().then((resp: any) => {
-      const deviceId = signalProtocol.convertToDeviceId(account.session_id)
-      localStorage.deviceId = deviceId
-      localStorage.primarySessionId = primarySessionId
-      localStorage.sessionId = account.session_id
-      localStorage.newVersion = true
-      this.$store.dispatch('saveAccount', account)
-      this.updateParticipantSession(account.user_id, account.session_id)
-      console.log('------signin deviceId', deviceId)
-      this.$router.push('/')
-    })
-  }
-  pushSignalKeys() {
-    // @ts-ignore
-    return wasmObject.then(() => {
-      const body = generateKeys()
-      return signalAPI.postSignalKeys(body)
-    })
-  }
+  },
   updateParticipantSession(userId: string, sessionId: string) {
     const s = conversationDao.getConversationsByUserId(userId)
     if (!s || s.length === 0) {
@@ -227,6 +229,9 @@ export default class SignIn extends Vue {
       })
     )
   }
+  }
+  
+  
 }
 </script>
 
